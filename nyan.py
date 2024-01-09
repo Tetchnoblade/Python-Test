@@ -1,6 +1,6 @@
 import requests
 
-count = int(input("希望性交回数を教えてください: "))
+count = int(input("クリック回数: "))
 
 def press():
     headers = {
@@ -38,9 +38,9 @@ for i in range(count):
 
     if process:
         print('='*10)
-        print(f'性交です{counter}回目')
+        print(f'クリックに成功しました ({counter}回目)')
         print(process)
         print('='*10)
         counter += 1
     elif not process:
-        print('拒否られた')
+        print(f'クリックに失敗しました ({counter}回目)')
