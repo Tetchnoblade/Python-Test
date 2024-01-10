@@ -9,3 +9,5 @@ taiko.py ... 太鼓ウェブのアカウント作成
 
 godfield.py ... godfieldスパマー
 > https://godfield.net
+
+zyanken.py ... ただのじゃんけん
