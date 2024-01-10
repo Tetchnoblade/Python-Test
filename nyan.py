@@ -1,6 +1,6 @@
 import requests
 
-count = int(input("クリック回数: "))
+count = int(input('クリック回数: '))
 
 def press():
     headers = {

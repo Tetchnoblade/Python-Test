@@ -1,7 +1,7 @@
 import requests
 
-nameInput = str(input("登録ユーザー名: "))
-passInput = str(input("登録パスワード: "))
+nameInput = str(input('登録ユーザー名: '))
+passInput = str(input('登録パスワード: '))
 
 userInfo = [nameInput, passInput]
 

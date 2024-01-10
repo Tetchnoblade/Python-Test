@@ -1,11 +1,11 @@
 import requests
 import time
 
-inputUserName = str(input("ユーザー名: "))
-inputRoomId = str(input("隠れ乱闘合言葉: "))
-inputMessage = str(input("送信メッセージ: "))
-inputLength = int(input("送信回数: "))
-inputDelay = int(input("送信遅延: "))
+inputUserName = str(input('ユーザー名: '))
+inputRoomId = str(input('隠れ乱闘合言葉: '))
+inputMessage = str(input('送信メッセージ: '))
+inputLength = int(input('送信回数: '))
+inputDelay = int(input('送信遅延: '))
 
 def createToken():
     headers = {
@@ -47,7 +47,7 @@ def createPrivateRoom(idtoken):
         'authority': 'asia-northeast1-godfield.cloudfunctions.net',
         'accept': '*/*',
         'accept-language': 'ja,en-US;q=0.9,en;q=0.8',
-        'authorization': f'Bearer {idtoken}', #関数にidtokenの追加
+        'authorization': f'Bearer {idtoken}',
         'content-type': 'application/json',
         'origin': 'https://godfield.net',
         'referer': 'https://godfield.net/',
@@ -106,7 +106,7 @@ def addRoomUser(idtoken, getRoom):
 
 counter = 1
 
-def sendChat(idtoken, getRoom,counter):
+def sendChat(idtoken, getRoom, counter):
     headers = {
         'authority': 'asia-northeast1-godfield.cloudfunctions.net',
         'accept': '*/*',
