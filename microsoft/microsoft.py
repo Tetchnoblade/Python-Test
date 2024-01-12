@@ -30,11 +30,11 @@ else:
 
 inputProxyMode = str(input('Proxy (Http) を使用しますか (y/n): '))
 
-inputNameLast = 'tanaka'
-inputNameFirst = 'tarou'
+inputNameLast = randomname(6)
+inputNameFirst = randomname(6)
 inputDate = '2000'
 inputMonth = '1'
-inputDay = '23'
+inputDay = '1'
 
 urls = ['https://www.microsoft.com/ja-jp']
 s = Service(path.join(path.dirname(__file__), 'chromedriver.exe'))
