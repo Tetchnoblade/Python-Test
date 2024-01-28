@@ -2,7 +2,6 @@
 
 import requests
 import random, string
-import threading
 
 def randomname(n):
    randlst = [random.choice(string.ascii_letters + string.digits) for i in range(n)]
