@@ -36,7 +36,7 @@ inputDate = '2000'
 inputMonth = '1'
 inputDay = '1'
 
-urls = ['https://www.microsoft.com/ja-jp']
+urls = ['https://www.microsoft.com']
 s = Service(path.join(path.dirname(__file__), 'chromedriver.exe'))
 
 if inputProxyMode=='y':

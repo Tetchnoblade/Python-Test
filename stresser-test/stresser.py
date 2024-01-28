@@ -18,8 +18,10 @@ for url in urls:
 
 driver.get(url)
 
+sleep(3)
+
 try:
-    setUser = driver.find_element(By.ID, '#ここ取得できなくて困ってる')
+    setUser = driver.find_element(By.LINK_TEXT, 'Username')
     setUser.send_keys(inputUsername)
     print('名前おっけー')
 except:

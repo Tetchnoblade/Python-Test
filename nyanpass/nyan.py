@@ -1,8 +1,12 @@
 #nyanpass.comのにゃんぱすーボタンを指定した回数クリックします
 
 import requests
+import threading
 
 count = int(input('クリック回数: '))
+threadCount = int(input('並列スレッド数: '))
+
+print(f'合計{count*threadCount}回クリックします')
 
 def press():
     headers = {
@@ -36,13 +40,14 @@ def press():
 counter = 1
 
 for i in range(count):
-    process = press()
-
-    if process:
-        print('='*10)
-        print(f'クリックに成功しました ({counter}回目)')
-        print(process)
-        print('='*10)
+    for i in range(threadCount):
+        thread = threading.Thread(target=press)
+        thread.start()
+        thread.join()
+    print('='*10)
+    if thread:
+        print(f'クリックに成功しました ({counter*threadCount})')
         counter += 1
-    elif not process:
-        print(f'クリックに失敗しました ({counter}回目)')
+    elif not thread:
+        print(f'クリックに失敗しました ({counter*threadCount})')
+        counter -= 1
