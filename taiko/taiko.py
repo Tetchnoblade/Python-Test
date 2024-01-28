@@ -1,12 +1,16 @@
 #cjdgrevival.com (太鼓ウェブ) 用のアカウントを登録できます
-#pythonもっと勉強したら複数垢同時とか頑張ります
 
 import requests
+import random, string
+import threading
 
-nameInput = str(input('登録ユーザー名: '))
-passInput = str(input('登録パスワード: '))
+def randomname(n):
+   randlst = [random.choice(string.ascii_letters + string.digits) for i in range(n)]
+   return ''.join(randlst)
 
-userInfo = [nameInput, passInput]
+countInput = int(input('アカウント作成数: '))
+
+print(f'{countInput}個作成します')
 
 def get_csrftoken():
     cookies = {
@@ -59,8 +63,8 @@ def send_register():
     }
 
     json_data = {
-        'username': userInfo[0],
-        'password': userInfo[1],
+        'username': nameInput,
+        'password': passwordInput,
     }
 
     response = requests.post('https://cjdgrevival.com/api/register', cookies=cookies, headers=headers, json=json_data)
@@ -70,23 +74,25 @@ def send_register():
     else:
         return False
 
-userToken = get_csrftoken()
-if userToken:
-    print('')
-    print('トークンをゲットしました')
-    canRegister = send_register()
-else:
-    print('')
-    print('トークンのゲットに失敗しました')
+realCount = 1
 
-if canRegister:
-    print('アカウント生成に成功しました')
-    print('')
-    print('='*10,'アカウント情報','='*10)
-    print('ユーザー名:',userInfo[0])
-    print('パスワード:',userInfo[1])
-    print('トークン:',userToken)
-    print('='*36)
-else:
-    print('')
-    print('アカウント作成に失敗しました')
+for i in range(countInput):
+    nameInput = randomname(8)
+    passwordInput = randomname(6)
+    userToken = get_csrftoken()
+
+    if userToken:
+        canRegister = send_register()
+    else:
+        print('token auth failed')
+
+    if canRegister:
+        print(f'{nameInput}:{passwordInput} ({realCount}/{countInput})')
+        realCount += 1
+        f = open('saved-accounts.txt', 'a')
+        f.write(f'{nameInput}:{passwordInput}')
+        f.write('\n')
+        f.close()
+    else:
+        print('register failed')
+        realCount -= 1
