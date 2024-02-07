@@ -55,4 +55,4 @@ for i in range(generateCount):
     executor.submit(sendRequest)
     executor.submit(sendRequest)
     executor.submit(sendRequest)
-    time.sleep(4)
+    time.sleep(2)
