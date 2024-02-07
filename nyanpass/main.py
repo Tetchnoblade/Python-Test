@@ -1,14 +1,14 @@
 #nyanpass.comのにゃんぱすーボタンを指定した回数クリックします
 
 import requests
-import threading
+import time
+import concurrent.futures
 
-count = int(input('クリック回数: '))
-threadCount = int(input('並列スレッド数: '))
+count = int(input('クリック回数 x40: '))
 
-print(f'合計{count*threadCount}回クリックします')
+print(f'合計{count*40}回クリックします')
 
-def press():
+def sendRequest():
     headers = {
         'authority': 'nyanpass.com',
         'accept': 'application/json, text/javascript, */*; q=0.01',
@@ -33,21 +33,50 @@ def press():
     response = requests.post('https://nyanpass.com/add.php', headers=headers, data=data)
 
     if response.status_code==200:
-        return response.json()['cnt']
+        print(f'クリックに成功しました')
     else:
-        return False
-
-counter = 1
+        print(f'クリックに失敗しました')
 
 for i in range(count):
-    for i in range(threadCount):
-        thread = threading.Thread(target=press)
-        thread.start()
-        thread.join()
-    print('='*10)
-    if thread:
-        print(f'クリックに成功しました ({counter*threadCount})')
-        counter += 1
-    elif not thread:
-        print(f'クリックに失敗しました ({counter*threadCount})')
-        counter -= 1
+    executor = concurrent.futures.ThreadPoolExecutor(max_workers=40)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    time.sleep(2)

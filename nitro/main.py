@@ -4,7 +4,6 @@ import requests
 import time
 import sys
 import os
-import threading
 import concurrent.futures
 
 generateCount = int(input("Nitro作成数 x20: "))
