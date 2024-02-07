@@ -24,9 +24,10 @@ def sendRequest():
     response = requests.post(url, headers=headers, json=data)
 
     if response.status_code == 200:
-        with open("generated.txt", "a") as file:
-            file.write(f"https://discord.com/billing/partner-promotions/1180231712274387115/{response.json()['token']}\n")
-        time.sleep(0.05)
+        f = open('generated.txt', 'a')
+        f.write(f"https://discord.com/billing/partner-promotions/1180231712274387115/{response.json()['token']}")
+        f.write('\n')
+        f.close()
 
 print(f'生成中です... (x{generateCount})')
 
