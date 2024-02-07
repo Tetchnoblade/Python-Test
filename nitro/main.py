@@ -5,9 +5,9 @@ import time
 import sys
 import os
 import threading
-from concurrent.futures import ThreadPoolExecutor
+import concurrent.futures
 
-generateCount = int(input("Nitro作成数: "))
+generateCount = int(input("Nitro作成数 x20: "))
 
 def sendRequest():
     url = "https://api.discord.gx.games/v1/direct-fulfillment"
@@ -24,14 +24,35 @@ def sendRequest():
     response = requests.post(url, headers=headers, json=data)
 
     if response.status_code == 200:
-        f = open('generated.txt', 'a')
-        f.write(f"https://discord.com/billing/partner-promotions/1180231712274387115/{response.json()['token']}")
-        f.write('\n')
-        f.close()
+        got = response.json()['token']
+        print(f'Generated - [https://discord.com/billing/partner-promotions/1180231712274387115/{got}]')
+        with open("generated.txt", "a") as f:
+            f.write(f"https://discord.com/billing/partner-promotions/1180231712274387115/{got}\n")
+    else:
+        print(f'Failed to Generate')
 
-print(f'生成中です... (x{generateCount})')
-
-thread = ThreadPoolExecutor(max_workers=3)
+print(f'生成中です... (x{generateCount*20})')
 
 for i in range(generateCount):
-    thread.submit(sendRequest)
+    executor = concurrent.futures.ThreadPoolExecutor(max_workers=20)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    executor.submit(sendRequest)
+    time.sleep(4)

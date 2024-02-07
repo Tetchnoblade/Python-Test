@@ -88,10 +88,8 @@ for i in range(countInput):
     if canRegister:
         print(f'{nameInput}:{passwordInput} ({realCount}/{countInput})')
         realCount += 1
-        f = open('saved-accounts.txt', 'a')
-        f.write(f'{nameInput}:{passwordInput}')
-        f.write('\n')
-        f.close()
+        with open("saved-accounts.txt", "a") as f:
+            f.write(f'{nameInput}:{passwordInput}\n')
     else:
         print('register failed')
         realCount -= 1
