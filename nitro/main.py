@@ -6,7 +6,8 @@ import sys
 import os
 import concurrent.futures
 
-generateCount = int(input("Nitro作成数 x20: "))
+generateCount = int(input("Nitro作成数: "))
+inputThread = int(input("スレッド数: "))
 
 def sendRequest():
     url = "https://api.discord.gx.games/v1/direct-fulfillment"
@@ -30,28 +31,10 @@ def sendRequest():
     else:
         print(f'Failed to Generate')
 
-print(f'生成中です... (x{generateCount*20})')
+print(f'生成中です... (x{generateCount*inputThread})')
 
 for i in range(generateCount):
-    executor = concurrent.futures.ThreadPoolExecutor(max_workers=20)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
+    executor = concurrent.futures.ThreadPoolExecutor(max_workers=inputThread)
+    for i in range(inputThread):
+        executor.submit(sendRequest)
     time.sleep(2)

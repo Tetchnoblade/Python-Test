@@ -4,9 +4,10 @@ import requests
 import time
 import concurrent.futures
 
-count = int(input('クリック回数 x40: '))
+count = int(input('クリック数: '))
+thread = int(input('スレッド数: '))
 
-print(f'合計{count*40}回クリックします')
+print(f'合計{count*thread}回クリックします')
 
 def sendRequest():
     headers = {
@@ -38,45 +39,7 @@ def sendRequest():
         print(f'クリックに失敗しました')
 
 for i in range(count):
-    executor = concurrent.futures.ThreadPoolExecutor(max_workers=40)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
+    executor = concurrent.futures.ThreadPoolExecutor(max_workers=thread)
+    for i in range(thread):
+        executor.submit(sendRequest)
     time.sleep(2)

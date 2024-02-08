@@ -5,9 +5,10 @@ import random, string
 import time
 import concurrent.futures
 
-countInput = int(input('アカウント作成数 x20: '))
+countInput = int(input('アカウント作成数: '))
+threadInput = int(input('スレッド数: '))
 
-print(f'{countInput*20}個作成します')
+print(f'{countInput*threadInput}個作成します')
 
 def sendRequest():
     randlst = [random.choice(string.ascii_letters + string.digits) for i in range(8)]
@@ -77,25 +78,7 @@ def sendRequest():
         print('failed')
 
 for i in range(countInput):
-    executor = concurrent.futures.ThreadPoolExecutor(max_workers=20)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
-    executor.submit(sendRequest)
+    executor = concurrent.futures.ThreadPoolExecutor(max_workers=threadInput)
+    for i in range(threadInput):
+        executor.submit(sendRequest)
     time.sleep(2)
