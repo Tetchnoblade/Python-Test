@@ -56,22 +56,23 @@ else:
 def solver(webID, sendMode, oklog, failedlog, afterSleepTime):
     try:
         setterID = driver.find_element(By.ID, webID)
-        if sendMode=='click':
-            setterID.click()
-        if sendMode=='email':
-            setterID.send_keys(inputEmail)
-        if sendMode=='password':
-            setterID.send_keys(inputPassword)
-        if sendMode=='lastname':
-            setterID.send_keys(inputNameLast)
-        if sendMode=='firstname':
-            setterID.send_keys(inputNameFirst)
-        if sendMode=='year':
-            setterID.send_keys(inputDate)
-        if sendMode=='month':
-            setterID.send_keys(inputMonth)
-        if sendMode=='day':
-            setterID.send_keys(inputDay)
+        match sendMode:
+            case 'click':
+                setterID.click()
+            case 'email':
+                setterID.send_keys(inputEmail)
+            case 'password':
+                setterID.send_keys(inputPassword)
+            case 'lastname':
+                setterID.send_keys(inputNameLast)
+            case 'firstname':
+                setterID.send_keys(inputNameFirst)
+            case 'year':
+                setterID.send_keys(inputDate)
+            case 'month':
+                setterID.send_keys(inputMonth)
+            case 'day':
+                setterID.send_keys(inputDay)
         print(oklog)
     except:
         print(failedlog)
