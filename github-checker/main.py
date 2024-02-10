@@ -1,6 +1,7 @@
 #指定したGitHubリポジトリのReleasesからダウンロード数を取得します
 
 import requests
+import time
 
 inputName = str(input('ユーザー名: '))
 inputRepo = str(input('レポジトリ名: '))
@@ -18,5 +19,15 @@ if data:
             print('Downloads: NULL')
         print('='*20)
     print('合計:', counter)
-    f = open("counts.txt", "a")
-    f.write(f"{inputRepo.lower()}: {counter}\n")
+    print('合計ダウンロード数をcounts.txtに保存して終了しますか?')
+    selection = str(input('y/n: '))
+    if selection=='y' or selection=='Y':
+        f = open("counts.txt", "a")
+        f.write(f"{inputRepo.lower()}: {counter}\n")
+        print('保存しました')
+    else:
+        print('保存せずに終了します')
+else:
+    print('レポジトリが見つからなかったため、終了します')
+
+time.sleep(2)
