@@ -98,8 +98,8 @@ print('アカウント情報を保存して終了しますか？')
 inputField = str(input('y/n: '))
 
 if inputField=='y':
-    with open("saved-accounts.txt", "a") as f:
-        f.write(f'{inputEmail}@outlook.jp:{inputPassword}\n')
+    f = open("saved-accounts.txt", "a")
+    f.write(f'{inputEmail}@outlook.jp:{inputPassword}\n')
     print('アカウント情報を saved-accounts.txt に保存しました')
 else:
     print('終了します')

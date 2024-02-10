@@ -26,8 +26,8 @@ def sendRequest():
     if response.status_code == 200:
         got = response.json()['token']
         print(f'Generated - [https://discord.com/billing/partner-promotions/1180231712274387115/{got}]')
-        with open("generated.txt", "a") as f:
-            f.write(f"https://discord.com/billing/partner-promotions/1180231712274387115/{got}\n")
+        f = open("generated.txt", "a")
+        f.write(f"https://discord.com/billing/partner-promotions/1180231712274387115/{got}\n")
     else:
         print(f'Failed to Generate')
 

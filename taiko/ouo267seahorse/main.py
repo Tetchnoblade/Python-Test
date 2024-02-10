@@ -72,8 +72,8 @@ def sendRequest():
 
     if register_response.status_code==200:
         print(f'success {nameInput}:{passwordInput}')
-        with open("saved-accounts.txt", "a") as f:
-            f.write(f'{nameInput}:{passwordInput}\n')
+        f = open("saved-accounts.txt", "a")
+        f.write(f'{nameInput}:{passwordInput}\n')
     else:
         print('failed')
 
