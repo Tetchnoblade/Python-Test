@@ -29,7 +29,7 @@ def sendRequest():
         f = open("generated.txt", "a")
         f.write(f"https://discord.com/billing/partner-promotions/1180231712274387115/{got}\n")
     else:
-        print(f'Failed to Generate')
+        print('Failed to Generate')
 
 print(f'生成中です... (x{generateCount*inputThread})')
 
