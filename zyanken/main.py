@@ -1,6 +1,7 @@
 #じゃんけんできます。暇つぶしに作ったらifだらけになったけど一応動きます
 
 import random
+import time
 
 countInput = int(input('何回戦しますか: '))
 
@@ -68,3 +69,5 @@ if countInput==win+same+lose:
         print('勝ち')
     elif lose>win:
         print('まけ')
+
+time.sleep(2)
