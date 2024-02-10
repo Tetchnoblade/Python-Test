@@ -3,8 +3,8 @@
 import requests
 import time
 
-inputName = str(input('UserName: '))
-inputRepo = str(input('RepositoryName: '))
+inputName = str(input('Username: '))
+inputRepo = str(input('Repository Name: '))
 
 data = requests.get(f'https://api.github.com/repos/{inputName.lower()}/{inputRepo.lower()}/releases')
 counter = 0
@@ -18,7 +18,7 @@ if data:
         except:
             print('Downloads: NULL')
         print('='*20)
-    print('Total:', counter)
+    print('合計:', counter)
     print('合計ダウンロード数をcounts.txtに保存して終了しますか?')
     selection = str(input('y/n: '))
     if selection=='y' or selection=='Y':
