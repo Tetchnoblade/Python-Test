@@ -1,16 +1,3 @@
-# Pythonデビュー
-おうたおくらに色々教えてもらいながら作りました
-
-nyan.py ... にゃんぱすーボタン自動クリック
-> https://nyanpass.com
-
-taiko.py ... 太鼓ウェブのアカウント作成
-> https://cjdgrevival.com
-
-godfield.py ... godfieldスパマー
-> https://godfield.net
-
-stresser.py ... stresserのアカウント生成 (作成途中)
-> https://stresser.zone
-
-zyanken.py ... ただのじゃんけん
+# Pythonでいろいろ作る
+requests系はおうたおくらに色々教えてもらいながら作りました
+使ってみてね
