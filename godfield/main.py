@@ -185,7 +185,7 @@ def remove_user(counter, gotToken, roomId):
     response = requests.post('https://asia-northeast1-godfield.cloudfunctions.net/removeRoomUser', headers=headers, json=json_data)
 
     if response.status_code==200:
-        print(f'切断に成功しました')
+        print('切断に成功しました')
         return True
     else:
         print('切断に失敗しました')
