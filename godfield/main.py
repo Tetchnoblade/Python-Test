@@ -1,16 +1,28 @@
 #godfield.net用のスパマーです
-#もっとpython勉強したら複数垢対応とかやってみます
 
 import requests
+import random, string
 import time
+import concurrent.futures
 
-inputUserName = str(input('ユーザー名: '))
-inputRoomId = str(input('隠れ乱闘合言葉: '))
-inputMessage = str(input('送信メッセージ: '))
+inputThread = int(input('アカウント数(最大12人): '))
+inputRoomId = input('隠れ乱闘合言葉: ')
+inputMessage = input('送信メッセージ: ')
 inputLength = int(input('送信回数: '))
-inputDelay = int(input('送信遅延: '))
 
-def createToken():
+discounter = 0
+tokens = []
+rooms = []
+
+print('開始します')
+print('アカウントを切断する場合はY、しないで終了する場合はNと入力してください')
+
+def randomCode(length):
+    return ''.join([random.choice(string.ascii_letters + string.digits) for i in range(length)])
+
+def get_token():
+    joinName = randomCode(8)
+
     headers = {
         'authority': 'securetoken.googleapis.com',
         'accept': '*/*',
@@ -39,18 +51,21 @@ def createToken():
     }
 
     response = requests.post('https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser', params=params, headers=headers, data=data)
-    if response.status_code==200:
-        awa = response.json()
-        return awa['idToken']
-    else:
-        return False
 
-def createPrivateRoom(idtoken):
+    if response.status_code==200:
+        print('トークンを作成しました')
+        restoken = response.json()['idToken']
+        tokens.append(restoken)
+        create_room(joinName, restoken)
+    else:
+        print('トークン作成に失敗しました')
+
+def create_room(name, idToken):
     headers = {
         'authority': 'asia-northeast1-godfield.cloudfunctions.net',
         'accept': '*/*',
         'accept-language': 'ja,en-US;q=0.9,en;q=0.8',
-        'authorization': f'Bearer {idtoken}',
+        'authorization': f'Bearer {idToken}',
         'content-type': 'application/json',
         'origin': 'https://godfield.net',
         'referer': 'https://godfield.net/',
@@ -66,22 +81,25 @@ def createPrivateRoom(idtoken):
     json_data = {
         'mode': 'hidden',
         'password': inputRoomId,
-        'userName': inputUserName,
+        'userName': name,
     }
 
     response = requests.post('https://asia-northeast1-godfield.cloudfunctions.net/createRoom', headers=headers, json=json_data)
 
     if response.status_code==200:
-        return response.json()['roomId']
+        print('ルームIDを取得しました')
+        resroom = response.json()['roomId']
+        rooms.append(resroom)
+        addroom_user(name, idToken, resroom)
     else:
-        return False
+        print('ルームID取得に失敗しました')
 
-def addRoomUser(idtoken, getRoom):
+def addroom_user(name, gotToken, roomId):
     headers = {
         'authority': 'asia-northeast1-godfield.cloudfunctions.net',
         'accept': '*/*',
         'accept-language': 'ja,en-US;q=0.9,en;q=0.8',
-        'authorization': f'Bearer {idtoken}',
+        'authorization': f'Bearer {gotToken}',
         'content-type': 'application/json',
         'origin': 'https://godfield.net',
         'referer': 'https://godfield.net/',
@@ -96,20 +114,21 @@ def addRoomUser(idtoken, getRoom):
 
     json_data = {
         'mode': 'hidden',
-        'roomId': getRoom,
-        'userName': inputUserName,
+        'roomId': roomId,
+        'userName': name,
     }
 
     response = requests.post('https://asia-northeast1-godfield.cloudfunctions.net/addRoomUser', headers=headers, json=json_data)
 
     if response.status_code==200:
-        return True
+        print('部屋参加に成功しました')
+        for i in range(inputLength):
+            send_chat(gotToken, roomId)
+            time.sleep(2)
     else:
-        return False
+        print('部屋参加に失敗しました')
 
-counter = 1
-
-def sendChat(idtoken, getRoom, counter):
+def send_chat(idtoken, getRoom):
     headers = {
         'authority': 'asia-northeast1-godfield.cloudfunctions.net',
         'accept': '*/*',
@@ -130,46 +149,58 @@ def sendChat(idtoken, getRoom, counter):
     json_data = {
         'mode': 'hidden',
         'roomId': getRoom,
-        'text': inputMessage+' '+str(counter),
+        'text': f'{inputMessage} {randomCode(3)}',
     }
 
     response = requests.post('https://asia-northeast1-godfield.cloudfunctions.net/setComment', headers=headers, json=json_data)
 
     if response.status_code==200:
+        print('メッセージを送信しました')
+    else:
+        print('メッセージの送信に失敗しました')
+
+def remove_user(counter, gotToken, roomId):
+    headers = {
+        'authority': 'asia-northeast1-godfield.cloudfunctions.net',
+        'accept': '*/*',
+        'accept-language': 'ja,en-US;q=0.9,en;q=0.8',
+        'authorization': f'Bearer {gotToken}',
+        'content-type': 'application/json',
+        'origin': 'https://godfield.net',
+        'referer': 'https://godfield.net/',
+        'sec-ch-ua': '"Not A(Brand";v="99", "Google Chrome";v="121", "Chromium";v="121"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-platform': '"Windows"',
+        'sec-fetch-dest': 'empty',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-site': 'cross-site',
+        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+    }
+
+    json_data = {
+        'mode': 'hidden',
+        'roomId': roomId,
+    }
+
+    response = requests.post('https://asia-northeast1-godfield.cloudfunctions.net/removeRoomUser', headers=headers, json=json_data)
+
+    if response.status_code==200:
+        print(f'切断に成功しました')
         return True
     else:
+        print('切断に失敗しました')
         return False
 
-getToken = createToken()
+executor = concurrent.futures.ThreadPoolExecutor(max_workers=inputThread)
+for i in range(inputThread):
+    executor.submit(get_token)
 
-if getToken:
-    print('='*60)
-    print('トークン生成成功')
-    getRoom = createPrivateRoom(getToken)
+check = input('')
+if check=='y' or check=='Y':
+    print('切断を開始します')
+    for i in range(inputThread):
+        remove_user(discounter, tokens[discounter], rooms[discounter])
+        if remove_user:
+            discounter += 1
 else:
-    print('トークン生成失敗')
-
-if getRoom:
-    print('部屋作成成功')
-    omgRoomUser = addRoomUser(getToken,getRoom)
-else:
-    print('部屋作成失敗')
-
-if omgRoomUser:
-    print('部屋参加成功')
-    canChat = sendChat(getToken,getRoom,counter)
-    print('='*20,'メッセージ送信成功','='*20)
-    print(inputMessage+' '+str(counter))
-    counter += 1
-    time.sleep(inputDelay)
-else:
-    print('部屋参加失敗')
-
-if canChat:
-    for i in range(inputLength-1):
-        sendChat(getToken,getRoom,counter)
-        print(inputMessage+' '+str(counter))
-        counter += 1
-        time.sleep(inputDelay)
-else:
-    print('メッセージ送信失敗')
+    print('切断せず終了します')
