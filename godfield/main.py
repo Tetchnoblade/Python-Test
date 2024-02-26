@@ -17,7 +17,6 @@ if inputMode==2:
     inputRoop = int(input('ぴょこぴょこ回数: '))
 
 print('開始します')
-print('アカウントを切断する場合はY、しないで終了する場合はNと入力してください')
 
 def randomCode(length):
     return ''.join([random.choice(string.ascii_letters + string.digits) for i in range(length)])
