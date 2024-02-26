@@ -1,4 +1,4 @@
-#godfield.net用のスパマーです
+#godfield.netのスパム、嫌がらせツールです
 
 import requests
 import random, string
@@ -7,12 +7,14 @@ import concurrent.futures
 
 inputThread = int(input('アカウント数(最大12人): '))
 inputRoomId = input('隠れ乱闘合言葉: ')
-inputMessage = input('送信メッセージ: ')
-inputLength = int(input('送信回数: '))
-
-discounter = 0
-tokens = []
-rooms = []
+print('モードを選択してください 1.スパム 2.ぴょこぴょこ')
+inputMode = int(input('(1/2): '))
+if inputMode==1:
+    inputMessage = input('送信メッセージ: ')
+    inputLength = int(input('送信回数: '))
+    inputLeft = input('スパム後、部屋を退出しますか? (y/n): ')
+if inputMode==2:
+    inputRoop = int(input('ぴょこぴょこ回数: '))
 
 print('開始します')
 print('アカウントを切断する場合はY、しないで終了する場合はNと入力してください')
@@ -21,8 +23,6 @@ def randomCode(length):
     return ''.join([random.choice(string.ascii_letters + string.digits) for i in range(length)])
 
 def get_token():
-    joinName = randomCode(8)
-
     headers = {
         'authority': 'securetoken.googleapis.com',
         'accept': '*/*',
@@ -53,9 +53,9 @@ def get_token():
     response = requests.post('https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser', params=params, headers=headers, data=data)
 
     if response.status_code==200:
-        restoken = response.json()['idToken']
-        tokens.append(restoken)
-        create_room(joinName, restoken)
+        return response.json()['idToken']
+    else:
+        return False
 
 def create_room(name, idToken):
     headers = {
@@ -84,9 +84,9 @@ def create_room(name, idToken):
     response = requests.post('https://asia-northeast1-godfield.cloudfunctions.net/createRoom', headers=headers, json=json_data)
 
     if response.status_code==200:
-        resroom = response.json()['roomId']
-        rooms.append(resroom)
-        addroom_user(name, idToken, resroom)
+        return response.json()['roomId']
+    else:
+        return False
 
 def addroom_user(name, gotToken, roomId):
     headers = {
@@ -115,11 +115,39 @@ def addroom_user(name, gotToken, roomId):
     response = requests.post('https://asia-northeast1-godfield.cloudfunctions.net/addRoomUser', headers=headers, json=json_data)
 
     if response.status_code==200:
-        print(f'<{name}> joined room')
-        for i in range(inputLength):
-            send_chat(name, gotToken, roomId)
+        return True
     else:
-        print(f'<{name}> failed to join room')
+        return False
+
+def remove_user(username, token, roomId):
+    headers = {
+        'authority': 'asia-northeast1-godfield.cloudfunctions.net',
+        'accept': '*/*',
+        'accept-language': 'ja,en-US;q=0.9,en;q=0.8',
+        'authorization': f'Bearer {token}',
+        'content-type': 'application/json',
+        'origin': 'https://godfield.net',
+        'referer': 'https://godfield.net/',
+        'sec-ch-ua': '"Not A(Brand";v="99", "Google Chrome";v="121", "Chromium";v="121"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-platform': '"Windows"',
+        'sec-fetch-dest': 'empty',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-site': 'cross-site',
+        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+    }
+
+    json_data = {
+        'mode': 'hidden',
+        'roomId': roomId,
+    }
+
+    response = requests.post('https://asia-northeast1-godfield.cloudfunctions.net/removeRoomUser', headers=headers, json=json_data)
+
+    if response.status_code==200:
+        return True
+    else:
+        return False
 
 def send_chat(name, idtoken, getRoom):
     headers = {
@@ -154,46 +182,34 @@ def send_chat(name, idtoken, getRoom):
     else:
         print(f'<{name}> failed to send message')
 
-def remove_user():
-    headers = {
-        'authority': 'asia-northeast1-godfield.cloudfunctions.net',
-        'accept': '*/*',
-        'accept-language': 'ja,en-US;q=0.9,en;q=0.8',
-        'authorization': f'Bearer {tokens[discounter]}',
-        'content-type': 'application/json',
-        'origin': 'https://godfield.net',
-        'referer': 'https://godfield.net/',
-        'sec-ch-ua': '"Not A(Brand";v="99", "Google Chrome";v="121", "Chromium";v="121"',
-        'sec-ch-ua-mobile': '?0',
-        'sec-ch-ua-platform': '"Windows"',
-        'sec-fetch-dest': 'empty',
-        'sec-fetch-mode': 'cors',
-        'sec-fetch-site': 'cross-site',
-        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
-    }
-
-    json_data = {
-        'mode': 'hidden',
-        'roomId': rooms[discounter],
-    }
-
-    response = requests.post('https://asia-northeast1-godfield.cloudfunctions.net/removeRoomUser', headers=headers, json=json_data)
-
-    if response.status_code==200:
-        print('disconnected')
-        return True
-    else:
-        print('failed to disconnect')
-        return False
+def do_pyoko():
+    userName = randomCode(8)
+    print(f'generated name {userName}')
+    token = get_token()
+    if token:
+        print('token generated')
+        roomid = create_room(userName, token)
+        if roomid:
+            print('got roomid')
+            if inputMode==1:
+                adduser = addroom_user(userName, token, roomid)
+                if adduser:
+                    print(f'<{userName}> joined')
+                    for i in range(inputLength):
+                        send_chat(userName, token, roomid)
+                    if inputLeft=='Y' or inputLeft=='y':
+                        deleteuser = remove_user(userName, token, roomid)
+                        if deleteuser:
+                            print(f'<{userName}> left')
+            if inputMode==2:
+                for i in range(inputRoop):
+                    adduser = addroom_user(userName, token, roomid)
+                    if adduser:
+                        print(f'<{userName}> joined')
+                        deleteuser = remove_user(userName, token, roomid)
+                        if deleteuser:
+                            print(f'<{userName}> left')
 
 executor = concurrent.futures.ThreadPoolExecutor(max_workers=inputThread)
 for i in range(inputThread):
-    executor.submit(get_token)
-
-check = input('')
-if check=='y' or check=='Y':
-    print('disconnecting...')
-    remover = concurrent.futures.ThreadPoolExecutor(max_workers=inputThread)
-    for i in range(inputThread):
-        remover.submit(remove_user)
-        discounter += 1
+    executor.submit(do_pyoko)
