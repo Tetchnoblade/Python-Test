@@ -12,6 +12,7 @@ inputMode = int(input('(1/2): '))
 if inputMode==1:
     inputMessage = input('送信メッセージ: ')
     inputLength = int(input('送信回数: '))
+    inputRetry = int(input('何回送信したらアカウントを変更しますか: '))
     inputLeft = input('スパム後、部屋を退出しますか? (y/n): ')
 if inputMode==2:
     inputRoop = int(input('ぴょこぴょこ回数: '))
@@ -148,7 +149,7 @@ def remove_user(username, token, roomId):
     else:
         return False
 
-def send_chat(name, idtoken, getRoom):
+def send_chat(name, idtoken, getRoom, recount):
     headers = {
         'authority': 'asia-northeast1-godfield.cloudfunctions.net',
         'accept': '*/*',
@@ -177,37 +178,46 @@ def send_chat(name, idtoken, getRoom):
     response = requests.post('https://asia-northeast1-godfield.cloudfunctions.net/setComment', headers=headers, json=json_data)
 
     if response.status_code==200:
-        print(f'<{name}> sent message [{sendtext}]')
+        print(f'<{name}> Sent message [{sendtext}]')
+        if recount>=inputRetry:
+            print(f'<{name}> Disconnecting...')
+            remove_user(name, idtoken, getRoom)
     else:
-        print(f'<{name}> failed to send message')
+        print(f'<{name}> Failed to send message!')
+        do_pyoko()
 
 def do_pyoko():
     userName = randomCode(8)
-    print(f'generated name {userName}')
+    retryCount = 0
+    print(f'<{userName}> Generated Name')
     token = get_token()
     if token:
-        print('token generated')
+        print(f'<{userName}> Token Generated')
         roomid = create_room(userName, token)
         if roomid:
-            print('got roomid')
+            print(f'<{userName}> Got RoomID')
             if inputMode==1:
                 adduser = addroom_user(userName, token, roomid)
                 if adduser:
-                    print(f'<{userName}> joined')
+                    print(f'<{userName}> Joined')
                     for i in range(inputLength):
-                        send_chat(userName, token, roomid)
+                        send_chat(userName, token, roomid, retryCount)
+                        retryCount += 1
                     if inputLeft=='Y' or inputLeft=='y':
                         deleteuser = remove_user(userName, token, roomid)
                         if deleteuser:
-                            print(f'<{userName}> left')
+                            print(f'<{userName}> Left')
             if inputMode==2:
                 for i in range(inputRoop):
                     adduser = addroom_user(userName, token, roomid)
                     if adduser:
-                        print(f'<{userName}> joined')
+                        print(f'<{userName}> Joined')
                         deleteuser = remove_user(userName, token, roomid)
                         if deleteuser:
-                            print(f'<{userName}> left')
+                            print(f'<{userName}> Left')
+    else:
+        print(f'<{userName}> Rate Limited!')
+        inputThread -= 1
 
 executor = concurrent.futures.ThreadPoolExecutor(max_workers=inputThread)
 for i in range(inputThread):
