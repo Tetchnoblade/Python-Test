@@ -246,7 +246,8 @@ def send_chat(name, idtoken, getRoom, recount):
             print(f'<{name}> Disconnecting...')
             remove_user(name, idtoken, getRoom)
     else:
-        print(f'<{name}> Failed to send message!')
+        if recount<inputRetry:
+            print(f'<{name}> Failed to send message!')
         do_pyoko()
 
 def do_pyoko():
