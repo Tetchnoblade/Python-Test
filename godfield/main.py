@@ -25,7 +25,6 @@ print('開始します')
 def randomCode(length):
     return ''.join([random.choice(string.ascii_letters + string.digits) for i in range(length)])
 
-
 def get_token():
     headers = {
         'authority': 'securetoken.googleapis.com',
