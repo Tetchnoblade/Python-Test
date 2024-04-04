@@ -7,14 +7,16 @@ import concurrent.futures
 
 countInput = int(input('アカウント作成数: '))
 threadInput = int(input('スレッド数: '))
+print('スコアチートを有効にしますか？(ベータ)')
+cheatInput = input('(y/n): ')
 
 print(f'{countInput*threadInput}個作成します')
 
-def token_generate(sessionInput, name, password):
+def token_generate(name, password, cookie):
     cookies = {
         '_ga': 'GA1.1.76857572.1693120866',
         '_ga_ME8M5G343E': 'GS1.1.1703738176.4.1.1703739428.0.0.0',
-        'session': sessionInput,
+        'session': cookie,
     }
 
     headers = {
@@ -38,11 +40,11 @@ def token_generate(sessionInput, name, password):
     else:
         return False
 
-def account_verify(sessionInput, token, name, password):
+def account_verify(token, name, password, cookie):
     cookies = {
         '_ga': 'GA1.1.76857572.1693120866',
         '_ga_ME8M5G343E': 'GS1.1.1703738176.4.1.1703739428.0.0.0',
-        'session': sessionInput,
+        'session': cookie,
     }
 
     headers = {
@@ -74,11 +76,11 @@ def account_verify(sessionInput, token, name, password):
     else:
         return False
 
-def cheat_token(sessionInput, name, password):
+def cheat_token(name, password, cookie):
     cookies = {
         '_ga': 'GA1.1.76857572.1693120866',
         '_ga_ME8M5G343E': 'GS1.1.1703738176.4.1.1703739428.0.0.0',
-        'session': sessionInput,
+        'session': cookie,
     }
 
     headers = {
@@ -102,11 +104,11 @@ def cheat_token(sessionInput, name, password):
     else:
         return False
 
-def cheat_score(sessionInput, token, name, password):
+def cheat_score(token, name, password, cookie):
     cookies = {
         '_ga': 'GA1.1.76857572.1693120866',
         '_ga_ME8M5G343E': 'GS1.1.1703738176.4.1.1703739428.0.0.0',
-        'session': sessionInput,
+        'session': cookie,
     }
 
     headers = {
@@ -143,21 +145,26 @@ def cheat_score(sessionInput, token, name, password):
         print(f'<{name}:{password}> Failed')
         return False
 
+def random_string(long):
+    return ''.join([random.choice(string.ascii_letters + string.digits) for i in range(long)])
+
 def gen():
-    name = ''.join([random.choice(string.ascii_letters + string.digits) for i in range(8)])
-    password = ''.join([random.choice(string.ascii_letters + string.digits) for i in range(6)])
-    session_code = f"{''.join([random.choice(string.ascii_letters + string.digits) for i in range(8)])}-{''.join([random.choice(string.ascii_letters + string.digits) for i in range(4)])}-{''.join([random.choice(string.ascii_letters + string.digits) for i in range(4)])}-{''.join([random.choice(string.ascii_letters + string.digits) for i in range(4)])}-{''.join([random.choice(string.ascii_letters + string.digits) for i in range(12)])}"
-    token = token_generate(session_code, name, password)
+    name = random_string(8)
+    password = random_string(6)
+    cookie_session = f"{random_string(8)}-{random_string(4)}-{random_string(4)}-{random_string(4)}-{random_string(12)}"
+    token = token_generate(name, password, cookie_session)
     if token:
-        verify = account_verify(session_code, token, name, password)
+        verify = account_verify(token, name, password, cookie_session)
         if verify:
-            token_hack = cheat_token(session_code, name, password)
-            if token_hack:
-                score_hack = cheat_score(session_code, token, name, password)
-                if score_hack:
-                    print(f'Successfully Generated [{name}:{password}]')
-                    f = open("saved-accounts.txt", "a")
-                    f.write(f'{name}:{password}\n')
+            print(f'Successfully Generated [{name}:{password}]')
+            f = open("saved-accounts.txt", "a")
+            f.write(f'{name}:{password}\n')
+            if cheatInput=='Y' or cheatInput=='y':
+                token_hack = cheat_token(name, password, cookie_session)
+                if token_hack:
+                    score_hack = cheat_score(token, name, password, cookie_session)
+                    if score_hack:
+                        print(f'Added Cheat Scores [{name}:{password}]')
 
 for i in range(countInput):
     executor = concurrent.futures.ThreadPoolExecutor(max_workers=threadInput)
